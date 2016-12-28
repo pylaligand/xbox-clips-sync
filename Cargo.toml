@@ -1,0 +1,12 @@
+# Copyright (c) 2016 P.Y. Laligand
+
+[package]
+name = "xbox_clips_sync"
+version = "0.1.0"
+authors = ["P.Y. Laligand <py.laligand@gmail.com>"]
+
+[dependencies]
+getopts = "0.2"
+hyper = "0.9"
+serde = "0.8"
+serde_json = "0.8"
