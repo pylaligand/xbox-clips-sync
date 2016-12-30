@@ -1,9 +1,10 @@
 // Copyright (c) 2016 P.Y. Laligand
 
 use hyper::Client as HttpClient;
-use serde_json::{self, Value};
+use serde_json::{self, Map, Value};
 use std::io::Read;
 
+use super::clip::Clip;
 use super::xuid::Xuid;
 
 /// Header definition for the API key.
@@ -33,8 +34,37 @@ impl Client {
             .and_then(|json| {
                 json.as_u64()
             })
-            .and_then(|value| {
-                Some(Xuid(value))
+            .map(|value| {
+                Xuid(value)
+            })
+    }
+
+    /// Builds a clip object from its JSON representation.
+    fn create_clip(json: &mut Map<String, Value>) -> Clip {
+        let (id, date) = {
+            let mut get_value = |key: &str| -> String {
+                json.remove(key).unwrap().as_str().unwrap().to_owned()
+            };
+            (get_value("gameClipId"), get_value("datePublished"))
+        };
+        let url = json
+            .get("gameClipUris").unwrap().as_array().unwrap()
+            [0].as_object().unwrap()
+            .get("uri").unwrap().as_str().unwrap().to_owned();
+        Clip { id: id, url: url, date: date }
+    }
+
+    /// Returns the list of available clips for the given user.
+    pub fn get_clips(&self, xuid: &Xuid) -> Option<Vec<Clip>> {
+        let path = format!("{}/game-clips", xuid);
+        self.send_request(&path)
+            .map(|mut json| {
+                let clips = json.as_array_mut().unwrap();
+                let result: Vec<Clip> = clips.iter_mut().map(|clip| {
+                    let content = clip.as_object_mut().unwrap();
+                    Client::create_clip(content)
+                }).collect();
+                result
             })
     }
 

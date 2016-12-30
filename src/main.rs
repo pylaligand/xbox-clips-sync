@@ -17,6 +17,14 @@ fn main() {
     let gamertag = matches.opt_str("g").unwrap();
 
     let client = Client::new(api_key);
+
     let xuid = client.get_xuid(&gamertag).expect("Could not identify this gamertag");
     println!("ID for {} is {}", gamertag, xuid);
+
+    let clips = client.get_clips(&xuid).unwrap();
+    let size = clips.len();
+    println!("Found {} clips", size);
+    for clip in clips.iter().take(5) {
+        println!("{}", clip);
+    }
 }
