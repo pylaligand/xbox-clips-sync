@@ -10,3 +10,8 @@ getopts = "0.2"
 hyper = "0.9"
 serde = "0.8"
 serde_json = "0.8"
+yup-oauth2 = "^1.0"
+
+[dependencies.google-drive3]
+version = "1.0.2"
+features = ["yup-oauth2"]
