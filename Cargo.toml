@@ -9,8 +9,13 @@ authors = ["P.Y. Laligand <py.laligand@gmail.com>"]
 getopts = "0.2"
 hyper = "0.9"
 serde = "0.8"
+serde_derive = "0.8"
 serde_json = "0.8"
 yup-oauth2 = "^1.0"
+
+[dependencies.chrono]
+version = "0.2"
+features = ["serde"]
 
 [dependencies.google-drive3]
 version = "1.0.2"
